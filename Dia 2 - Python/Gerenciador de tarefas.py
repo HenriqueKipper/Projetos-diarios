@@ -35,7 +35,7 @@ def main():
         
         try: lista_tarefas = ler_json(arquivo_tarefas)
         
-        except:
+        except FileNotFoundError:
             lista_tarefas = []
     
         print("===== GERENCIADOR DE TAREFAS =====")
@@ -58,19 +58,27 @@ def main():
 
             print("Nome da tarefa: ")
 
-            nome = input()
+            nome = input().strip()
 
-            tarefa = [{"nome":nome},{"concluida":False}]
+            nome_nulo = False
+            
+            if nome == "":
+                nome_nulo = True
+            
+            tarefa = {"nome":nome,"concluida":False}
 
             tarefa_existe = False
 
             for i in lista_tarefas:
-                if i[0]["nome"] == nome:
+                if i["nome"] == nome:
 
                     tarefa_existe = True
             
             if tarefa_existe:
-                print("Não é permitido criar mais de uma tarefa com o mesmo nome")
+                print("Não é permitido criar mais de uma tarefa com o mesmo nome.")
+                input("\n")
+            elif nome_nulo:
+                print("Não é permitido criar uma tarefa sem nome.")
                 input("\n")
             else:
                 lista_tarefas.append(tarefa)
@@ -93,11 +101,11 @@ def main():
                 limpar_tela()
                 print("Suas tarefas:")
                 for i in ler_json(arquivo_tarefas):
-                    if i[1]["concluida"] == False:
+                    if i["concluida"] == False:
                         estado = "Pendente"
                     else:
                         estado = "Concluida"
-                    print(i[0]["nome"],"-",f"[{estado}]")
+                    print(i["nome"],"-",f"[{estado}]")
                 input("\n")
 
 
@@ -119,8 +127,8 @@ def main():
                 concluir_tarefa = input()
                 tarefa_encontrada = False
                 for i in lista_tarefas:
-                    if i[0]["nome"] == concluir_tarefa:
-                        i[1] = {"concluida":True}
+                    if i["nome"] == concluir_tarefa:
+                        i = {"nome":nome,"concluida":False}
                         tarefa_encontrada = True
                 if tarefa_encontrada:
 
@@ -151,7 +159,7 @@ def main():
                 contador = -1
                 for i in lista_tarefas:
                     contador = contador + 1
-                    if i[0]["nome"] == remover_tarefa:
+                    if i["nome"] == remover_tarefa:
                         lista_tarefas.pop(contador)
                         tarefa_removida = True
                 if tarefa_removida:
@@ -174,7 +182,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 
