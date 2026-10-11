@@ -1,0 +1,181 @@
+import json
+
+def escrever_json(arquivo,objeto):
+
+    arquivo_json = open(arquivo, 'w', encoding='utf-8')
+
+    json.dump(objeto,arquivo_json)
+
+def ler_json(arquivo):
+    
+    arquivo_json = open(arquivo, 'r', encoding='utf-8')
+
+    return json.load(arquivo_json)
+
+def adicionar_json(arquivo,objeto):
+
+    arquivo_json = open(arquivo, 'a', encoding='utf-8')
+
+    json.dump(objeto,arquivo_json)
+
+def limpar_tela():
+    for i in range(8):
+        print("\n")
+
+
+
+def main():
+
+    
+    while True:
+
+        arquivo_tarefas = "tarefas.json"
+        
+        try: lista_tarefas = ler_json(arquivo_tarefas)
+        
+        except:
+            lista_tarefas = []
+    
+        print("===== GERENCIADOR DE TAREFAS =====")
+        print("")
+        print("1. Adicionar tarefa")
+        print("2. Listar tarefas")
+        print("3. Concluir tarefa")
+        print("4. Remover tarefa")
+        print("5. Sair")
+        print("")
+        print("Escolha uma opção:")
+
+        opcao = input()
+        limpar_tela()
+        if opcao == "1":
+
+            
+
+            limpar_tela()
+
+            print("Nome da tarefa: ")
+
+            nome = input()
+
+            tarefa = [{"nome":nome},{"concluida":False}]
+
+            tarefa_existe = False
+
+            for i in lista_tarefas:
+                if i[0]["nome"] == nome:
+
+                    tarefa_existe = True
+            
+            if tarefa_existe:
+                print("Não é permitido criar mais de uma tarefa com o mesmo nome")
+                input("\n")
+            else:
+                lista_tarefas.append(tarefa)
+
+                escrever_json(arquivo_tarefas,lista_tarefas)
+
+        elif opcao == "2":
+
+            try: 
+                ler_json(arquivo_tarefas)
+                a = lista_tarefas[0]
+
+            except FileNotFoundError:
+                print("Nenhuma tafefa encontrada.")
+                input("\n")
+            except IndexError:
+                print("Nenhuma tafefa encontrada.")
+                input("\n")
+            else:
+                limpar_tela()
+                print("Suas tarefas:")
+                for i in ler_json(arquivo_tarefas):
+                    if i[1]["concluida"] == False:
+                        estado = "Pendente"
+                    else:
+                        estado = "Concluida"
+                    print(i[0]["nome"],"-",f"[{estado}]")
+                input("\n")
+
+
+        elif opcao == "3":
+
+            try: 
+                ler_json(arquivo_tarefas) 
+                a = lista_tarefas[0]
+            
+            except FileNotFoundError:
+                print("Nenhuma tafefa encontrada.")
+                input("\n")
+            except IndexError:
+                print("Nenhuma tafefa encontrada.")
+                input("\n")
+            else:
+                limpar_tela()
+                print("Escreva o nome da tarefa que deseja concluir:")
+                concluir_tarefa = input()
+                tarefa_encontrada = False
+                for i in lista_tarefas:
+                    if i[0]["nome"] == concluir_tarefa:
+                        i[1] = {"concluida":True}
+                        tarefa_encontrada = True
+                if tarefa_encontrada:
+
+                    escrever_json(arquivo_tarefas,lista_tarefas)
+                    
+                    print("Tarefa marcada como concluida.")
+                    input("\n")
+                else:
+                    print("Não foi possivel encontrar a tarefa.")
+                    input("\n")
+
+        elif opcao == "4":
+            try: 
+                ler_json(arquivo_tarefas)
+                a =lista_tarefas[0]
+                        
+            except FileNotFoundError:
+                print("Nenhuma tafefa encontrada.")
+                input("\n")
+            except IndexError:
+                print("Nenhuma tafefa encontrada.")
+                input("\n")
+            else:
+                limpar_tela()
+                print("Escreva o nome da tarefa que deseja remover:")
+                remover_tarefa = input()
+                tarefa_removida = False
+                contador = -1
+                for i in lista_tarefas:
+                    contador = contador + 1
+                    if i[0]["nome"] == remover_tarefa:
+                        lista_tarefas.pop(contador)
+                        tarefa_removida = True
+                if tarefa_removida:
+                    
+                    escrever_json(arquivo_tarefas,lista_tarefas)
+                                    
+                    print("Tarefa removida.")
+                    input("\n")
+                else:
+                    print("Não foi possivel encontrar a tarefa.")
+                    input("\n")
+
+        elif opcao == "5":
+            break
+        
+        else:
+            input("escolha uma opção valida.")
+        
+        limpar_tela()
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
