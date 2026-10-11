@@ -4,21 +4,13 @@ import json
 
 def escrever_json(arquivo,objeto):
 
-    arquivo_json = open(arquivo, 'w', encoding='utf-8')
-
-    json.dump(objeto,arquivo_json)
+    with open(arquivo, 'w', encoding='utf-8') as arquivo_json:
+        json.dump(objeto,arquivo_json)
 
 def ler_json(arquivo):
     
-    arquivo_json = open(arquivo, 'r', encoding='utf-8')
-
-    return json.load(arquivo_json)
-
-def adicionar_json(arquivo,objeto):
-
-    arquivo_json = open(arquivo, 'a', encoding='utf-8')
-
-    json.dump(objeto,arquivo_json)
+    with open(arquivo, 'r', encoding='utf-8') as arquivo_json:
+        return json.load(arquivo_json)
 
 def limpar_tela():
     for i in range(8):
@@ -37,6 +29,9 @@ def main():
         
         except FileNotFoundError:
             lista_tarefas = []
+        except json.JSONDecodeError:
+            print("ARQUIVO TAREFAS CORROMPIDO")
+            break
     
         print("===== GERENCIADOR DE TAREFAS =====")
         print("")
@@ -59,11 +54,6 @@ def main():
             print("Nome da tarefa: ")
 
             nome = input().strip()
-
-            nome_nulo = False
-            
-            if nome == "":
-                nome_nulo = True
             
             tarefa = {"nome":nome,"concluida":False}
 
@@ -77,7 +67,7 @@ def main():
             if tarefa_existe:
                 print("Não é permitido criar mais de uma tarefa com o mesmo nome.")
                 input("\n")
-            elif nome_nulo:
+            elif nome == "":
                 print("Não é permitido criar uma tarefa sem nome.")
                 input("\n")
             else:
@@ -128,7 +118,7 @@ def main():
                 tarefa_encontrada = False
                 for i in lista_tarefas:
                     if i["nome"] == concluir_tarefa:
-                        i = {"nome":nome,"concluida":False}
+                        i["concluida"] = True
                         tarefa_encontrada = True
                 if tarefa_encontrada:
 
