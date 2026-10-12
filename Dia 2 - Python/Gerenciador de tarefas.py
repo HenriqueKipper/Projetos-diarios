@@ -23,7 +23,7 @@ def ler_lista(lista):
             estado_concluida = "[Pendente]*"
         else:
             estado_concluida = "[Concluida]"
-        print(f"{contador} {estado_concluida} - {i["nome"]}")
+        print(f"{contador} {estado_concluida} - {i['nome']}")
         contador += 1
     return contador
 def titulo():
@@ -85,7 +85,7 @@ def main():
             
             tarefa = {"nome":nome_tarefa,"concluida":False}
             
-            if lista_tarefas.count({"nome":nome_tarefa,"concluida":True}) + lista_tarefas.count({"nome":nome_tarefa,"concluida":False}) > 0:
+            if any(i["nome"] == nome_tarefa for i in lista_tarefas):
                 print("Não é permitido criar mais de uma tarefa com o mesmo nome.")
                 input("\n")
             elif nome_tarefa == "":
